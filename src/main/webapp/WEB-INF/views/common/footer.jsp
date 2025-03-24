@@ -7,6 +7,8 @@
 
 </head>
 <body>
-	<h1>메인 페이지인데요? ㅋㅋ</h1>
+	<div class="jumbotron">
+		<h1>푸터</h1>
+	</div>
 </body>
 </html>
