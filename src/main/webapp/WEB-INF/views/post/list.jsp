@@ -48,5 +48,8 @@
 		    </c:if>
 	    </tbody>
   </table>
+  <div class="clearfix mb-3"> <!-- clearfix가 없으면 게시글 등록이라는 버튼이 푸터랑 겹침. -->
+  	<a href="<c:url value="/post/insert?bo_num=${bo_num}"/>" class="btn btn-outline-success float-right">게시글 등록</a>
+  </div>
 </body>
 </html>
