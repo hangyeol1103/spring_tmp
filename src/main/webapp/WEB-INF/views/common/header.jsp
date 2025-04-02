@@ -26,7 +26,7 @@
 		      <a class="nav-link" href="<c:url value="/login"/>">로그인</a>
 		    </li>
 	  	</c:if>
-	  	<c:if test="${user ne null && user.me_aduthority eq 'ADMIN'}">
+	  	<c:if test="${user ne null && user.me_authority eq 'ADMIN'}">
 		  	<li class="nav-item">
 		      <a class="nav-link" href="<c:url value="/admin/board"/>">게시판 관리</a>
 		    </li>	  	

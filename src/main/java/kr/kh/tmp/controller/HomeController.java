@@ -1,5 +1,8 @@
 package kr.kh.tmp.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.kh.tmp.model.dto.PersonDTO;
 import kr.kh.tmp.model.vo.MemberVO;
 import kr.kh.tmp.service.MemberService;
 
@@ -72,5 +79,37 @@ public class HomeController {
 		model.addAttribute("url", "/");
 		model.addAttribute("msg", "로그아웃 했습니다.");
 		return "message";
+	}
+	@ResponseBody // 서버에서 보낸 데이터를 그대로 전송하는 역할 뷰 리졸버를 거치지 않고.
+	//object로 보냈다면 @RequestParam으로 받아야 한다.
+	@GetMapping("/ajax/sample1")
+	public Object ajaxSample1(@RequestParam String name, @RequestParam int age) {
+		System.out.println(name + " : " + age);
+		return "home";
+	}
+	@ResponseBody
+	@PostMapping("/ajax/sample2")
+	public Object ajaxSample2(@RequestBody PersonDTO person) {
+		System.out.println(person);
+		return "home2";
+	}
+	@ResponseBody
+	@GetMapping("/ajax/sample3")
+	public Map<String, Object> ajaxSample3(@RequestParam String name, @RequestParam int age) {
+		PersonDTO person = new PersonDTO();
+		person.setName(name);
+		person.setAge(age);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("person", person); //여기서 "person"이 jsp에서 받을 때 person으로 받음.
+		map.put("string", "안녕하세요");
+		
+		return map;
+	}
+	
+	@GetMapping("/ajax/sample4")
+	public Object ajaxSample4(@RequestParam int bo_num) {
+		
+		return "redirect:/post/list?bo_num=" + bo_num;
 	}
 }

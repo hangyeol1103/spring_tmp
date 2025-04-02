@@ -11,6 +11,8 @@
 	<annotation-driven />
 
 	<resources mapping="/resources/**" location="/resources/" />
+	
+	<resources mapping="/download/**" location="file:///d:/uploads/" />
 
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
@@ -36,8 +38,15 @@
 	<!-- 인터셉터 등록 -->
 	<beans:bean id="loginInterceptor" class="kr.kh.tmp.interceptor.LoginInterceptor"/>
 	<beans:bean id="adminInterceptor" class="kr.kh.tmp.interceptor.AdminInterceptor"/>
+	<beans:bean id="memberInterceptor" class="kr.kh.tmp.interceptor.MemberInterceptor"/>
 	<!-- 인터셉터 맵핑 -->
 		<interceptors>
+			<interceptor>
+	 			<mapping path="/post/update"/>
+	 			<mapping path="/post/update/*"/>
+	 			<mapping path="/post/delete/*"/>
+ 				<beans:ref bean="memberInterceptor"/>
+ 		</interceptor>
 			<interceptor>
 				<mapping path="/admin/**"/>
 				<beans:ref bean="adminInterceptor"/>
@@ -48,5 +57,14 @@
 			</interceptor>
 		</interceptors>
 	
+		<!-- 파일 업로드 -->
+	 	<beans:bean id="multipartResolver" 
+	 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	 		<!-- 업로드 최대 크기 10Mb -->
+	 		<beans:property name="maxUploadSize" value="10485760"/>
+	 	</beans:bean>
+	 	<beans:bean id="uploadPath" class="java.lang.String">
+	 		<beans:constructor-arg value="d:\\uploads"/>
+	 	</beans:bean>
 	
 </beans:beans>
