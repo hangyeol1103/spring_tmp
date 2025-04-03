@@ -45,9 +45,9 @@
  		<div class="comment-wrap">
  		
  		</div>
- 		<form class="comment-insert-form">
- 			<textarea name="content"></textarea>
- 			<button type="submit">댓글 등록</button>
+ 		<form class="comment-insert-form input-group">
+ 			<textarea name="content" class="form-control"></textarea>
+ 			<button type="submit" class="btn btn-outline-success">댓글 등록</button>
  		</form>
  	</div>
  	<div class="mb-3 d-flex justify-content-between">
@@ -66,10 +66,27 @@
  		}
  		$(document).on("submit", ".comment-insert-form", function(e){
  			e.preventDefault();
- 			//댓글 내용을 입력 안한 경우
+ 			
+ 			if('${user.me_id}' == ''){
+ 				if(confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하겠습니까?")){
+ 					location.href = "<c:url value="/login"/>";
+ 				}
+ 				return;
+ 			}
  			
  			//this content form의 find 자손중에 []안에 있는 val 값을 찾는다.
- 			var content = $(this).find("[name=content]").val();
+ 			//var content = $(this).find("[name=content]").val();
+ 			var $content = $(this).find("[name=content]");
+ 			var content = $content.val();
+ 			var ori_num = $(this).data("num");
+ 			ori_num = ori_num == 'undefined' ? 0 : ori_num;
+
+ 			//댓글 내용을 입력 안한 경우
+ 			if(content.length == 0){
+ 				alert("댓글 내용을 입력하세요.");
+ 				$content.focus();
+ 				return;
+ 			}
  			
  			
  			$.ajax({
@@ -78,12 +95,14 @@
  				type : 'post', 
  				data : JSON.stringify({
  					co_po_num : cri.po_num,
- 					co_content : content
+ 					co_content: content,
  				}),
  				contentType : "application/json; charset=utf-8",
  				success : function (data){
 					if(data){
 						alert('댓글 등록!');
+						$content.val('');
+ 						getCommentList(cri);
 					}else{
 						alert('댓글 등록 실패!');
 					}
@@ -91,5 +110,58 @@
  			});
  		})
  	</script>
+ 	
+ 	<script type="text/javascript">
+ 		getCommentList(cri);
+ 		function getCommentList(cri) { //위에 var cri를 호출함.
+ 			$.ajax({
+ 				async : true,
+ 				url : '<c:url value="/comment/list"/>', 
+ 				type : 'post', 
+ 				data : JSON.stringify(cri),
+ 				contentType : "application/json; charset=utf-8",
+ 				success : function (data){
+ 					$(".comment-wrap").html(data);
+ 				}
+ 			});
+		}
+ 	</script>
+ 	
+ 	<script type="text/javascript">
+ 		$(document).on("submit", ".comment-update-form", function(e){
+ 			e.preventDefault();
+ 			var $content = $(this).find("[name=content]");
+ 			var content = $content.val();
+ 			var co_num = $(this).data("num");
+ 			
+ 
+ 			if(content.length == 0){
+ 				alert("수정할 댓글 내용을 입력하세요.");
+ 				$content.focus();
+ 				return;
+ 			}
+ 			
+ 			$.ajax({
+ 				async : true,
+ 				url : '<c:url value="/comment/update"/>', 
+ 				type : 'post', 
+ 				data : JSON.stringify({
+ 					co_content: content,
+ 					co_num : co_num
+ 				}), 
+ 				contentType : "application/json; charset=utf-8",
+ 				success : function (data){
+ 					if(data){
+						alert('댓글 수정!');
+						$content.val('');
+ 						getCommentList(cri);
+					}else{
+						alert('댓글 수정 실패!');
+					}
+ 				}
+ 			});
+ 		})
+ 	</script>
+ 	
  </body>
  </html>

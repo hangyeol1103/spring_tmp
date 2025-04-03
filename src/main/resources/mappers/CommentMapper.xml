@@ -16,4 +16,23 @@
  		</if>
  		from comment
  	</insert>
+ 	<select id="selectCommentList" resultType="CommentVO">
+ 		select * from comment
+ 		where co_po_num = #{cri.po_num}
+ 		order by co_ori_num desc, co_num
+ 		limit #{cri.pageStart}, #{cri.perPageNum}  <!-- 고정이라 외워놓으면 편함. 페이지네이션 적용할 때 -->
+ 	</select>
+ 	<select id="selectCountCommentList" resultType="int">
+ 		select count(*) from comment 
+ 		where co_po_num = #{cri.po_num}
+ 	</select>
+ 	<select id="selectComment" resultType="CommentVO">
+ 		select * from comment where co_num = #{co_num} and co_del = 'N'
+ 	</select>
+ 	<update id="deleteComment">
+ 		update comment set co_del = 'Y' where co_num = #{co_num}
+ 	</update>
+ 	<update id="updateComment">
+ 		update comment set co_content = #{co.co_content} where co_num = #{co.co_num}
+ 	</update>
 </mapper>
